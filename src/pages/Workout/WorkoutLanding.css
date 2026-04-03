@@ -1,0 +1,125 @@
+.quick-start-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  width: 100%;
+  padding: var(--space-5);
+  background: linear-gradient(135deg, var(--bg-card), var(--bg-elevated));
+  border: 2px dashed var(--accent-primary);
+  border-radius: var(--radius-xl);
+  cursor: pointer;
+  text-align: left;
+  margin-bottom: var(--space-6);
+  transition: all var(--transition-fast);
+  color: var(--text-primary);
+}
+
+.quick-start-card:active {
+  border-style: solid;
+  background: var(--accent-primary-dim);
+}
+
+.quick-start-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-md);
+  background: var(--accent-primary-dim);
+  color: var(--accent-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.quick-start-title {
+  font-size: var(--font-size-md);
+  font-weight: 700;
+}
+
+.quick-start-desc {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+/* Program workout list */
+.program-workout-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.program-workout-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  color: var(--text-primary);
+}
+
+.program-workout-item:active {
+  background: var(--bg-hover);
+}
+
+.pw-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  background: var(--accent-secondary-dim);
+  color: var(--accent-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.pw-info {
+  flex: 1;
+}
+
+.pw-name {
+  font-weight: 700;
+  font-size: var(--font-size-base);
+}
+
+.pw-detail {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.pw-play {
+  color: var(--accent-primary);
+}
+
+/* Recent history */
+.recent-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.recent-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.recent-date {
+  font-weight: 600;
+}
+
+.recent-meta {
+  display: flex;
+  gap: var(--space-3);
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.recent-meta span {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}

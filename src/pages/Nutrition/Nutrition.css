@@ -1,0 +1,125 @@
+.nutrition-today {
+  margin-bottom: var(--space-6);
+}
+
+.macro-overview {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.macro-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.macro-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.macro-label {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.macro-values {
+  font-size: var(--font-size-sm);
+}
+
+.macro-bar-track {
+  height: 8px;
+  background: var(--bg-input);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.macro-bar-fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+}
+
+/* Average grid */
+.avg-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-2);
+}
+
+.avg-card {
+  text-align: center;
+  padding: var(--space-3);
+}
+
+.avg-label {
+  font-size: var(--font-size-xs);
+  color: var(--text-dim);
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: var(--space-1);
+}
+
+.avg-value {
+  font-size: var(--font-size-lg);
+  font-weight: 800;
+}
+
+/* History */
+.nutrition-history {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.nutrition-history-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nh-date {
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+}
+
+.nh-macros {
+  display: flex;
+  gap: var(--space-3);
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+}
+
+/* Form */
+.nutrition-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.nutrition-field label {
+  display: block;
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-1);
+}
+
+.nutrition-input-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.nutrition-input-row input {
+  flex: 1;
+}
+
+.nutrition-unit {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--text-dim);
+  min-width: 32px;
+}

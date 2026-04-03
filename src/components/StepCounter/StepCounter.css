@@ -1,0 +1,185 @@
+.step-counter-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--bg-primary);
+  z-index: var(--z-modal);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+}
+
+.step-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: var(--space-4);
+  flex-shrink: 0;
+}
+
+.step-title {
+  font-size: var(--font-size-md);
+  font-weight: 700;
+}
+
+/* Permission error */
+.step-permission-error {
+  padding: var(--space-4);
+  margin: var(--space-4);
+  background: rgba(255, 59, 48, 0.1);
+  border: 1px solid rgba(255, 59, 48, 0.3);
+  border-radius: var(--radius-lg);
+  text-align: center;
+  color: var(--danger);
+  font-weight: 600;
+}
+
+.step-permission-error .text-dim {
+  margin-top: var(--space-2);
+  font-weight: 400;
+  font-size: var(--font-size-sm);
+}
+
+/* Step display */
+.step-display {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+}
+
+.step-count {
+  font-size: 96px;
+  font-weight: 900;
+  color: var(--accent-primary);
+  line-height: 1;
+  text-shadow: 0 0 50px rgba(57, 255, 20, 0.25);
+  font-variant-numeric: tabular-nums;
+}
+
+.step-label {
+  font-size: var(--font-size-md);
+  font-weight: 700;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  margin-top: var(--space-2);
+}
+
+/* Stats grid */
+.step-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-3);
+  width: 100%;
+  max-width: 400px;
+  padding: 0 var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.step-stat {
+  text-align: center;
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-2);
+}
+
+.step-stat-value {
+  font-size: var(--font-size-lg);
+  font-weight: 800;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.step-stat-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-top: 2px;
+}
+
+/* Goal progress */
+.step-goal-hint {
+  width: 100%;
+  max-width: 400px;
+  padding: 0 var(--space-4);
+  margin-bottom: var(--space-6);
+  text-align: center;
+}
+
+.step-goal-bar {
+  height: 6px;
+  background: var(--bg-input);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  margin-bottom: var(--space-2);
+}
+
+.step-goal-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+  border-radius: var(--radius-full);
+}
+
+.step-goal-hint span {
+  font-size: var(--font-size-sm);
+}
+
+/* Toggle button */
+.step-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  width: calc(100% - var(--space-8));
+  max-width: 400px;
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-lg);
+  font-weight: 800;
+  cursor: pointer;
+  border: none;
+  position: relative;
+  overflow: hidden;
+  background: var(--accent-primary);
+  color: var(--text-inverse);
+  box-shadow: var(--shadow-glow-green);
+  margin-bottom: var(--space-4);
+}
+
+.step-toggle-btn.tracking {
+  background: var(--danger);
+  box-shadow: 0 0 20px rgba(255, 59, 48, 0.3);
+}
+
+.step-pulse {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.1);
+  transform: translate(-50%, -50%);
+  animation: pulse-step 2s ease-in-out infinite;
+}
+
+@keyframes pulse-step {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+  50% { transform: translate(-50%, -50%) scale(1.05); opacity: 1; }
+}
+
+/* Note */
+.step-note {
+  padding: var(--space-4);
+  font-size: var(--font-size-sm);
+  color: var(--text-dim);
+  text-align: center;
+  max-width: 340px;
+  line-height: 1.5;
+}

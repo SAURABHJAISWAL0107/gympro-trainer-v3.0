@@ -1,0 +1,19 @@
+{
+  "name": "GymPro Trainer",
+  "short_name": "GymPro",
+  "description": "AI-powered powerlifting coach. Track workouts, follow adaptive programs, crush your PRs.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0A0A0F",
+  "theme_color": "#0A0A0F",
+  "orientation": "portrait",
+  "categories": ["fitness", "health", "sports"],
+  "icons": [
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
