@@ -11,7 +11,7 @@ export default function Nutrition() {
   const navigate = useNavigate();
   const { addToast } = useStore();
   const [logs, setLogs] = useState([]);
-  const [form, setForm] = useState({ calories: '', protein: '', carbs: '', fat: '' });
+  const [form, setForm] = useState({ foodText: '' });
   const [today, setToday] = useState(new Date().toISOString().split('T')[0]);
   const [showAdd, setShowAdd] = useState(false);
 
@@ -184,26 +184,19 @@ export default function Nutrition() {
             </h3>
             
             <div className="nutrition-form">
-              {[
-                { key: 'calories', label: 'Calories', placeholder: '2400', unit: 'kcal' },
-                { key: 'protein', label: 'Protein', placeholder: '170', unit: 'g' },
-                { key: 'carbs', label: 'Carbs', placeholder: '280', unit: 'g' },
-                { key: 'fat', label: 'Fat', placeholder: '75', unit: 'g' },
-              ].map(field => (
-                <div key={field.key} className="nutrition-field">
-                  <label>{field.label}</label>
-                  <div className="nutrition-input-row">
-                    <input
-                      type="number"
-                      className="form-input"
-                      placeholder={field.placeholder}
-                      value={form[field.key]}
-                      onChange={e => setForm(f => ({ ...f, [field.key]: e.target.value }))}
-                    />
-                    <span className="nutrition-unit">{field.unit}</span>
-                  </div>
-                </div>
-              ))}
+              <div className="nutrition-field">
+                <label>Food Description</label>
+                <textarea
+                  className="form-input"
+                  placeholder="e.g., 2 eggs, 100g chicken breast, 1 banana"
+                  rows={3}
+                  value={form.foodText}
+                  onChange={e => setForm(f => ({ ...f, foodText: e.target.value }))}
+                />
+                <p className="text-dim" style={{ marginTop: 'var(--space-2)', fontSize: 'var(--font-size-sm)' }}>
+                  Enter quantity (g or kg) and food name separated by commas.
+                </p>
+              </div>
             </div>
 
             <button className="btn-primary" onClick={handleSave} style={{ marginTop: 'var(--space-4)' }}>
