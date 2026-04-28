@@ -7,6 +7,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
   plugins: [react()],
+
   resolve: {
     dedupe: ['react', 'react-dom'],
     alias: {
@@ -14,23 +15,26 @@ export default defineConfig({
       'react-dom': path.resolve(__dirname, 'node_modules/react-dom'),
     },
   },
+
   build: {
     outDir: 'dist',
     sourcemap: false,
     minify: 'esbuild',
     rollupOptions: {
       output: {
-        manualChunks: {
-          vendor: ['react', 'react-dom', 'react-router-dom', 'framer-motion'],
-          charts: ['recharts'],
-          db: ['dexie']
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('recharts')) return 'charts';
+            if (id.includes('dexie')) return 'db';
+            return 'vendor';
+          }
         }
       }
     }
   },
+
   server: {
     port: 5173,
     host: true
   }
 });
-
