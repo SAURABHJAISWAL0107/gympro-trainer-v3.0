@@ -1,16 +1,13 @@
 {
-  "name": "antigravity-projects",
+  "name": "gympro-trainer",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "vite build",
+    "type-check": "tsc --noEmit",
     "preview": "vite preview"
-  },
-  "devDependencies": {
-    "typescript": "~5.9.3",
-    "vite": "^8.0.1"
   },
   "dependencies": {
     "dexie": "^4.4.2",
@@ -19,5 +16,10 @@
     "react-router-dom": "^7.14.0",
     "recharts": "^3.8.1",
     "zustand": "^5.0.12"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "~5.9.3",
+    "vite": "^8.0.1"
   }
 }

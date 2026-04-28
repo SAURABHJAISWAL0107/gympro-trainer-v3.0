@@ -1,17 +1,30 @@
 // GymPro Trainer — Profile & Settings Page
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { User, Settings, Download, RefreshCw, Moon, Weight, Info, Crown, ChevronRight, Utensils } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import db from '../../db/database';
 import { loadSampleData } from '../../data/sampleData';
+import { getApiKey, setApiKey } from '../../engine/aiService';
 import './Profile.css';
 
 export default function Profile() {
   const navigate = useNavigate();
   const { profile, addToast } = useStore();
   const [showAbout, setShowAbout] = useState(false);
+  const [showApiSettings, setShowApiSettings] = useState(false);
+  const [apiKey, setApiKeyValue] = useState('');
+
+  useEffect(() => {
+    setApiKeyValue(getApiKey() || '');
+  }, []);
+
+  const handleSaveApiKey = () => {
+    setApiKey(apiKey);
+    addToast('API Key saved securely! 🤖');
+    setShowApiSettings(false);
+  };
 
   const handleExport = async () => {
     const data = {
@@ -45,6 +58,7 @@ export default function Profile() {
   };
 
   const settings = [
+    { icon: Crown, label: 'AI Settings', desc: 'Manage Gemini API Key', action: () => setShowApiSettings(!showApiSettings) },
     { icon: Utensils, label: 'Nutrition Tracker', action: () => navigate('/nutrition'), chevron: true },
     { icon: Download, label: 'Export Data', desc: 'Download your logs as JSON', action: handleExport },
     { icon: RefreshCw, label: 'Load Sample Data', desc: 'Pre-load 4 weeks of test data', action: handleLoadSample },
@@ -141,6 +155,37 @@ export default function Profile() {
           })}
         </div>
       </motion.div>
+
+      {/* AI Settings */}
+      {showApiSettings && (
+        <motion.div
+          className="api-settings-card card"
+          initial={{ opacity: 0, scaleY: 0.8 }}
+          animate={{ opacity: 1, scaleY: 1 }}
+          style={{ marginBottom: 'var(--space-4)' }}
+        >
+          <h3 className="section-title" style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+            <Crown size={18} style={{ color: 'var(--accent-purple)' }} /> AI Settings
+          </h3>
+          <p className="text-secondary" style={{ fontSize: 'var(--font-size-sm)', marginBottom: 'var(--space-3)' }}>
+            GymPro connects directly to Google Gemini for personalized AI features. Enter your free Gemini API key to enable AI Workout Generation and AI Nutrition Tracking. Your key is stored securely on your device.
+          </p>
+          <input 
+            type="password" 
+            className="form-input" 
+            placeholder="Paste Gemini API Key here..."
+            value={apiKey}
+            onChange={(e) => setApiKeyValue(e.target.value)}
+            style={{ marginBottom: 'var(--space-3)' }}
+          />
+          <button className="btn-primary" onClick={handleSaveApiKey}>
+            Save Key
+          </button>
+          <p className="text-dim" style={{ fontSize: 'var(--font-size-xs)', marginTop: 'var(--space-3)' }}>
+            Get a free key from <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-primary)' }}>Google AI Studio</a>.
+          </p>
+        </motion.div>
+      )}
 
       {/* Danger Zone */}
       <motion.div

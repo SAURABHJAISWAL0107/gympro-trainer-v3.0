@@ -1,21 +1,35 @@
 // GymPro Trainer — Basic Nutrition Logger
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Plus, ChevronLeft } from 'lucide-react';
+import { Plus, ChevronLeft, Sparkles, Loader } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import db from '../../db/database';
 import { useStore } from '../../store/useStore';
+import { analyzeNutrition } from '../../engine/aiService';
 import './Nutrition.css';
 
 export default function Nutrition() {
   const navigate = useNavigate();
   const { addToast } = useStore();
   const [logs, setLogs] = useState([]);
-  const [form, setForm] = useState({ foodText: '' });
+  const [form, setForm] = useState({ calories: '', protein: '', carbs: '', fat: '' });
   const [today, setToday] = useState(new Date().toISOString().split('T')[0]);
   const [showAdd, setShowAdd] = useState(false);
+  const [foodText, setFoodText] = useState('');
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [shouldRedirectToProfile, setShouldRedirectToProfile] = useState(false);
 
   useEffect(() => { loadLogs(); }, []);
+
+  useEffect(() => {
+    let timeoutId;
+    if (shouldRedirectToProfile) {
+      timeoutId = setTimeout(() => navigate('/profile'), 1500);
+    }
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+    };
+  }, [shouldRedirectToProfile, navigate]);
 
   async function loadLogs() {
     const all = await db.table('nutritionLogs').orderBy('date').reverse().limit(14).toArray();
@@ -43,7 +57,32 @@ export default function Nutrition() {
     addToast('Nutrition logged! 🍗');
     setShowAdd(false);
     setForm({ calories: '', protein: '', carbs: '', fat: '' });
+    setFoodText('');
     loadLogs();
+  };
+
+  const handleAIAnalyze = async () => {
+    if (!foodText.trim()) return;
+    setIsAnalyzing(true);
+    try {
+      const macros = await analyzeNutrition(foodText);
+      setForm({
+        calories: String(macros.calories || 0),
+        protein: String(macros.protein || 0),
+        carbs: String(macros.carbs || 0),
+        fat: String(macros.fat || 0),
+      });
+      addToast('AI Calculation Complete! ✨');
+    } catch (error) {
+      if (error.message === 'API_KEY_MISSING') {
+        addToast('⚠️ Set Gemini API key in Profile settings first!');
+        setShouldRedirectToProfile(true);
+      } else {
+        addToast('❌ AI calculation failed. Try again.');
+      }
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
 
   // Targets (simple estimate)
@@ -182,21 +221,54 @@ export default function Nutrition() {
             <h3 style={{ fontWeight: 800, fontSize: 'var(--font-size-lg)', marginBottom: 'var(--space-4)' }}>
               Log Nutrition
             </h3>
+
+            {/* AI Input Section */}
+            <div className="nutrition-ai-box" style={{ background: 'var(--bg-elevated)', padding: 'var(--space-3)', borderRadius: 'var(--radius-lg)', marginBottom: 'var(--space-4)', border: '1px solid rgba(168, 85, 247, 0.2)' }}>
+              <label htmlFor="ai-food-input" style={{ display: 'flex', gap: 'var(--space-2)', alignItems: 'center', color: 'var(--accent-purple)', fontWeight: 700, marginBottom: 'var(--space-2)' }}>
+                <Sparkles size={16} /> AI Food Logger
+              </label>
+              <textarea 
+                id="ai-food-input"
+                className="form-input" 
+                placeholder="What did you eat? e.g., '2 eggs, 1 slice of toast'"
+                rows="2"
+                value={foodText}
+                onChange={e => setFoodText(e.target.value)}
+                style={{ resize: 'none', marginBottom: 'var(--space-3)' }}
+              />
+              <button 
+                className="btn-secondary" 
+                onClick={handleAIAnalyze}
+                disabled={isAnalyzing || !foodText.trim()}
+                style={{ width: '100%', display: 'flex', justifyContent: 'center', gap: 'var(--space-2)' }}
+              >
+                {isAnalyzing ? <Loader size={18} className="spin" /> : <Sparkles size={18} />} 
+                {isAnalyzing ? 'Analyzing...' : 'Analyze & Fill'}
+              </button>
+            </div>
             
             <div className="nutrition-form">
-              <div className="nutrition-field">
-                <label>Food Description</label>
-                <textarea
-                  className="form-input"
-                  placeholder="e.g., 2 eggs, 100g chicken breast, 1 banana"
-                  rows={3}
-                  value={form.foodText}
-                  onChange={e => setForm(f => ({ ...f, foodText: e.target.value }))}
-                />
-                <p className="text-dim" style={{ marginTop: 'var(--space-2)', fontSize: 'var(--font-size-sm)' }}>
-                  Enter quantity (g or kg) and food name separated by commas.
-                </p>
-              </div>
+              {[
+                { key: 'calories', label: 'Calories', placeholder: '2400', unit: 'kcal' },
+                { key: 'protein', label: 'Protein', placeholder: '170', unit: 'g' },
+                { key: 'carbs', label: 'Carbs', placeholder: '280', unit: 'g' },
+                { key: 'fat', label: 'Fat', placeholder: '75', unit: 'g' },
+              ].map(field => (
+                <div key={field.key} className="nutrition-field">
+                  <label htmlFor={`input-${field.key}`}>{field.label}</label>
+                  <div className="nutrition-input-row">
+                    <input
+                      id={`input-${field.key}`}
+                      type="number"
+                      className="form-input"
+                      placeholder={field.placeholder}
+                      value={form[field.key]}
+                      onChange={e => setForm(f => ({ ...f, [field.key]: e.target.value }))}
+                    />
+                    <span className="nutrition-unit">{field.unit}</span>
+                  </div>
+                </div>
+              ))}
             </div>
 
             <button className="btn-primary" onClick={handleSave} style={{ marginTop: 'var(--space-4)' }}>

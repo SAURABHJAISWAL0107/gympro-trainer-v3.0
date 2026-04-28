@@ -2,9 +2,10 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ChevronRight, Play, RefreshCw, Calendar, Dumbbell, Clock } from 'lucide-react';
+import { ChevronRight, Play, RefreshCw, Calendar, Dumbbell, Clock, Sparkles, Loader } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import { generateProgram } from '../../engine/programGenerator';
+import { generatePersonalizedProgram } from '../../engine/aiService';
 import './Programs.css';
 
 const DAY_NAMES = ['', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -14,6 +15,18 @@ export default function Programs() {
   const { activeProgram, programDays, profile, saveProgram, startWorkout, addToast } = useStore();
   const [selectedDay, setSelectedDay] = useState(null);
   const [weekDays, setWeekDays] = useState([]);
+  const [isGeneratingAI, setIsGeneratingAI] = useState(false);
+  const [shouldRedirectToProfile, setShouldRedirectToProfile] = useState(false);
+
+  useEffect(() => {
+    let timeoutId;
+    if (shouldRedirectToProfile) {
+      timeoutId = setTimeout(() => navigate('/profile'), 1500);
+    }
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+    };
+  }, [shouldRedirectToProfile, navigate]);
 
   useEffect(() => {
     buildWeekView();
@@ -54,6 +67,26 @@ export default function Programs() {
     const { program, programDays: newDays } = generateProgram(profile);
     await saveProgram(program, newDays);
     addToast('Program regenerated! 🔄');
+  };
+
+  const handleGenerateAI = async () => {
+    if (!profile) return;
+    setIsGeneratingAI(true);
+    try {
+      addToast('Generating AI Program... this may take 15s 🤖');
+      const { program, programDays: newDays } = await generatePersonalizedProgram(profile);
+      await saveProgram(program, newDays);
+      addToast('AI Program Generated & Applied! ✨');
+    } catch (error) {
+      if (error.message === 'API_KEY_MISSING') {
+        addToast('⚠️ Set Gemini API key in Profile settings first!');
+        setShouldRedirectToProfile(true);
+      } else {
+        addToast('❌ AI generation failed. Try again.');
+      }
+    } finally {
+      setIsGeneratingAI(false);
+    }
   };
 
   const handleStartDay = (day) => {
@@ -194,9 +227,15 @@ export default function Programs() {
             </div>
           </div>
 
-          <button className="btn-secondary regenerate-btn" onClick={handleRegenerate}>
-            <RefreshCw size={16} /> Regenerate Program
-          </button>
+          <div style={{ display: 'flex', gap: 'var(--space-3)', marginTop: 'var(--space-4)' }}>
+            <button className="btn-secondary" onClick={handleRegenerate} style={{ flex: 1, padding: 'var(--space-3)' }} disabled={isGeneratingAI}>
+              <RefreshCw size={16} /> Standard
+            </button>
+            <button className="btn-primary" onClick={handleGenerateAI} style={{ flex: 2, background: 'var(--accent-purple)', boxShadow: '0 4px 15px rgba(168, 85, 247, 0.4)', padding: 'var(--space-3)' }} disabled={isGeneratingAI}>
+              {isGeneratingAI ? <Loader size={18} className="spin" /> : <Sparkles size={18} />} 
+              {isGeneratingAI ? 'Generating AI...' : 'Generate AI Program'}
+            </button>
+          </div>
         </motion.div>
       )}
     </div>

@@ -40,8 +40,8 @@ function AppContent() {
       const profile = await loadProfile();
       if (profile?.onboardingComplete) {
         await loadActiveProgram();
-        // Load sample data for demo purposes
-        await loadSampleData();
+        // Sample data can be loaded optionally via Profile settings
+        // await loadSampleData();
       }
       setLoading(false);
     }

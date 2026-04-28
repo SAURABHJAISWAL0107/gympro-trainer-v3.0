@@ -1,5 +1,5 @@
 // GymPro Trainer — Tap Rep Counter Component
-import { useState, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, RotateCcw, Check } from 'lucide-react';
 import './RepCounter.css';
@@ -8,7 +8,14 @@ export default function RepCounter({ onComplete, onClose }) {
   const [count, setCount] = useState(0);
   const [taps, setTaps] = useState([]);
   const [lastTapTime, setLastTapTime] = useState(null);
-  const [autoDetectTimeout, setAutoDetectTimeout] = useState(null);
+  const autoDetectTimeoutRef = useRef(null);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (autoDetectTimeoutRef.current) clearTimeout(autoDetectTimeoutRef.current);
+    };
+  }, []);
 
   const handleTap = useCallback(() => {
     const now = Date.now();
@@ -20,19 +27,18 @@ export default function RepCounter({ onComplete, onClose }) {
     if (navigator.vibrate) navigator.vibrate(30);
 
     // Auto-detect set completion after 3s of no taps
-    if (autoDetectTimeout) clearTimeout(autoDetectTimeout);
-    const timeout = setTimeout(() => {
+    if (autoDetectTimeoutRef.current) clearTimeout(autoDetectTimeoutRef.current);
+    autoDetectTimeoutRef.current = setTimeout(() => {
       // Flash the "Set Complete?" prompt
       document.getElementById('rep-auto-detect')?.classList.add('show');
     }, 3000);
-    setAutoDetectTimeout(timeout);
-  }, [autoDetectTimeout]);
+  }, []);
 
   const handleReset = () => {
     setCount(0);
     setTaps([]);
     setLastTapTime(null);
-    if (autoDetectTimeout) clearTimeout(autoDetectTimeout);
+    if (autoDetectTimeoutRef.current) clearTimeout(autoDetectTimeoutRef.current);
     document.getElementById('rep-auto-detect')?.classList.remove('show');
   };
 
